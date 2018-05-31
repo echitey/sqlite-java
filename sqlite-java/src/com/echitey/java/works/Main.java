@@ -23,125 +23,134 @@ public class Main {
 
     public static void main(String[] args) {
 
-        // DEFINE CONNECTION
-        Connection connection;
+        Connection connection = null;
         Statement statement;
         String sqlQuery;
 
-        try {
-            Class.forName("org.sqlite.JDBC");
+        // Menu
+        System.out.println("Menu: \n");
+        System.out.println("1- Add\n2- Select All\n3- Delete\n4- Update Password\n");
 
-            connection = DriverManager.getConnection("jdbc:sqlite:demo.db");
-            // If database doesnt exist, it will be created
-            System.out.println("Connection OK!");
+        while(true) {
 
+            System.out.println("\nEnter your choice: ");
 
-            // Menu
-            System.out.println("Menu: \n");
-            System.out.println("1- Add\n2- Select All\n3- Delete\n4- Update Password\n");
+            try {
 
-            Scanner scanner = new Scanner(System.in);
-            int choice = scanner.nextInt();
+                // DEFINE CONNECTION
+                Class.forName("org.sqlite.JDBC");
+                connection = DriverManager.getConnection("jdbc:sqlite:demo.db");
+                // If database doesnt exist, it will be created
+                //System.out.println("Connection OK!");
 
-            switch (choice){
-                case 1:
-                    Scanner userNameScanner = new Scanner(System.in);
-                    Scanner passwordScanner = new Scanner(System.in);
-                    System.out.println("Enter the Username: ");
-                    String userName = userNameScanner.nextLine();
-                    System.out.println("Enter the Password: ");
-                    String password = passwordScanner.nextLine();
+                Scanner scanner = new Scanner(System.in);
+                int choice = scanner.nextInt();
 
+                switch (choice) {
+                    case 1:
+                        Scanner userNameScanner = new Scanner(System.in);
+                        Scanner passwordScanner = new Scanner(System.in);
+                        System.out.println("Enter the Username: ");
+                        String userName = userNameScanner.nextLine();
+                        System.out.println("Enter the Password: ");
+                        String password = passwordScanner.nextLine();
 
-                    // Insert
-                    sqlQuery = "insert into " +
-                            "user(user_name, password) " +
-                            "values('"+ userName +"', '"+ password +"')";
+                        System.out.println("Saving  the user data... ");
 
-                    statement = connection.createStatement();
-                    statement.executeUpdate(sqlQuery);
-                    //connection.commit(); // After Create - Update - Delete
-                    statement.close();
-                    connection.close();
+                        // Insert
+                        sqlQuery = "insert into " +
+                                "user(user_name, password) " +
+                                "values('" + userName + "', '" + password + "')";
 
-                    break;
+                        statement = connection.createStatement();
+                        statement.executeUpdate(sqlQuery);
+                        System.out.println("User Successfully saved! ");
+                        statement.close();
+                        connection.close();
 
-
-                case 2:
-
-                    sqlQuery = "select * from user";
-                    // The Result is a type os ResultSet
-                    statement = connection.createStatement();
-                    ResultSet resultSet = statement.executeQuery(sqlQuery);
+                        break;
 
 
-                    while(resultSet.next()) {
-                        int _id = resultSet.getInt("id");
-                        String _username = resultSet.getString("user_name");
-                        String _password = resultSet.getString("password");
+                    case 2:
 
-                        System.out.println("User{" +
-                                "id=" + _id +
-                                ", username='" + _username + '\'' +
-                                ", password='" + _password + '\'' +
-                                '}');
-                    }
-
-                    resultSet.close();
-                    statement.close();
-                    connection.close();
-
-                    break;
+                        sqlQuery = "select * from user";
+                        // The Result is a type os ResultSet
+                        statement = connection.createStatement();
+                        ResultSet resultSet = statement.executeQuery(sqlQuery);
 
 
-                case 3:
+                        while (resultSet.next()) {
+                            int _id = resultSet.getInt("id");
+                            String _username = resultSet.getString("user_name");
+                            String _password = resultSet.getString("password");
 
-                    Scanner idScanner = new Scanner(System.in);
-                    System.out.println("Enter the UserID: ");
-                    int id = idScanner.nextInt();
+                            System.out.println("User{" +
+                                    "id=" + _id +
+                                    ", username='" + _username + '\'' +
+                                    ", password='" + _password + '\'' +
+                                    '}');
+                        }
 
-                    // Delete
-                    sqlQuery = "delete from user " +
-                            "where id= " + id;
+                        resultSet.close();
+                        statement.close();
+                        connection.close();
 
-                    statement = connection.createStatement();
-                    statement.executeUpdate(sqlQuery);
-                    //connection.commit(); // After Create - Update - Delete
-                    statement.close();
-                    connection.close();
-
-                    break;
+                        break;
 
 
-                case 4:
+                    case 3:
 
-                    idScanner = new Scanner(System.in);
-                    System.out.println("Enter the UserID: ");
-                    int _id = idScanner.nextInt();
+                        Scanner idScanner = new Scanner(System.in);
+                        System.out.println("Enter the UserID: ");
+                        int id = idScanner.nextInt();
 
-                    Scanner passScanner = new Scanner(System.in);
-                    System.out.println("Enter the new Password: ");
-                    String _pass = passScanner.nextLine();
+                        System.out.println("Deleting the user data with id: " +id);
+                        // Delete
+                        sqlQuery = "delete from user " +
+                                "where id= " + id;
 
-                    // Delete
-                    sqlQuery = "update user " +
-                            "set password = '" + _pass+"' " +
-                            "where id= " + _id;
+                        statement = connection.createStatement();
+                        statement.executeUpdate(sqlQuery);
+                        System.out.println("User Successfully deleted! ");
+                        //connection.commit(); // After Create - Update - Delete
+                        statement.close();
+                        connection.close();
 
-                    statement = connection.createStatement();
-                    statement.executeUpdate(sqlQuery);
-                    //connection.commit(); // After Create - Update - Delete
-                    statement.close();
-                    connection.close();
+                        break;
 
-                    break;
 
+                    case 4:
+
+                        idScanner = new Scanner(System.in);
+                        System.out.println("Enter the UserID: ");
+                        int _id = idScanner.nextInt();
+
+                        Scanner passScanner = new Scanner(System.in);
+                        System.out.println("Enter the new Password: ");
+                        String _pass = passScanner.nextLine();
+
+                        System.out.println("Editing the user data with id: " +_id);
+                        // Edit
+                        sqlQuery = "update user " +
+                                "set password = '" + _pass + "' " +
+                                "where id= " + _id;
+
+                        statement = connection.createStatement();
+                        statement.executeUpdate(sqlQuery);
+                        //connection.commit(); // After Create - Update - Delete
+                        System.out.println("User Successfully edited! ");
+                        statement.close();
+                        connection.close();
+
+                        break;
+
+                }
+
+
+            } catch (Exception exc) {
+                exc.printStackTrace();
+                System.exit(0);
             }
-
-
-        } catch (Exception exc) {
-            exc.printStackTrace();
-            System.exit(0);
         }
     }
 
