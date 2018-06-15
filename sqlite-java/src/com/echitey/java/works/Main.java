@@ -29,7 +29,7 @@ public class Main {
 
         // Menu
         System.out.println("Menu: \n");
-        System.out.println("1- Add\n2- Select All\n3- Delete\n4- Update Password\n");
+        System.out.println("1- Add\n2- Select All\n3- Delete\n4- Update Password\n0- Exit\n");
 
         while(true) {
 
@@ -143,6 +143,10 @@ public class Main {
                         connection.close();
 
                         break;
+
+
+                    case 0:
+                        System.exit(0);
 
                 }
 
